@@ -10,7 +10,7 @@ public class Lexer {
     }
 
     public Token nextToken() {
-        skipWhitespaceOutsideLiteral();
+        skipWhiteSpace();
         if (isAtEnd()) {
             return new Token(TokenType.EOF, "");
         }
@@ -32,7 +32,7 @@ public class Lexer {
         throw new RuntimeException("Unexpected character: " + ch);
     }
 
-    private boolean isAtEnd() {
+    private boolean isAtEnd() {//end of string input
         return pos >= input.length();
     }
 
@@ -44,13 +44,13 @@ public class Lexer {
         pos++;
     }
 
-    public void skipWhitespaceOutsideLiteral() {
+    private void skipWhiteSpace() {//advances when there is whitespace
         while (!isAtEnd() && Character.isWhitespace(currentChar())) {
             advance();
         }
     }
 
-    public Token readIdentifierOrKeyword() {
+    private Token readIdentifierOrKeyword() {
         StringBuilder sb = new StringBuilder();
         while (!isAtEnd() && (Character.isLetterOrDigit(currentChar()) || currentChar() == '_')) {
             sb.append(currentChar());
@@ -77,13 +77,18 @@ public class Lexer {
                 return new Token(TokenType.SET, word);
             case "reverse":
                 return new Token(TokenType.REVERSE, word);
+
+            case "space":
+            case "tab":
+            case "newline":
+                return new Token(TokenType.CONSTANT, word);
             default:
                 return new Token(TokenType.ID, word);
         }
 
     }
 
-    public Token readStringLiteral() {
+    private Token readStringLiteral() {
         advance();// skip first quote
 
         StringBuilder sb = new StringBuilder();
