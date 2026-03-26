@@ -1,9 +1,9 @@
 package nz.ac.massey.a1;
 
-public class PrintStatement implements Statement {
+public class PrintLengthStatement implements Statement{
     private final Expression expression;
 
-    public PrintStatement(Expression expression){
+    public PrintLengthStatement(Expression expression){
         this.expression = expression;
     }
 

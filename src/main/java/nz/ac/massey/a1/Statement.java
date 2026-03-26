@@ -1,4 +1,4 @@
 package nz.ac.massey.a1;
 
-public class Statement {
+public interface Statement {
 }

@@ -1,4 +1,4 @@
 package nz.ac.massey.a1;
 
-public class ListStatement {
+public class ListStatement implements Statement{
 }

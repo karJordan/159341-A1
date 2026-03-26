@@ -1,5 +1,7 @@
 package nz.ac.massey.a1;
 
+import javax.management.relation.RoleUnresolved;
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
@@ -12,18 +14,20 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         Interpreter interpreter = new Interpreter();
 
-        while (true) {
-            try {
-                String line = scanner.nextLine();
-
+        while (interpreter.isRunning()){
+            System.out.println(">");
+            String line = scanner.nextLine();
+            if(line.trim().isEmpty()){
+                continue;
+            }
+            try{
                 Lexer lexer = new Lexer(line);
                 Parser parser = new Parser(lexer);
-                Statement stmt = parser.parseStatement();
 
-                boolean shouldExit = interpreter.execute(stmt);
-                if (shouldExit) {
-                    break;}
-            } catch (Exception e) {
+                List<Statement> program = parser.parseProgram();
+                interpreter.execute(program);
+            }
+            catch (RuntimeException e){
                 System.out.println("Error: " + e.getMessage());
             }
         }
