@@ -1,5 +1,5 @@
 package nz.ac.massey.a1;
-
+//takes input and returns tokens
 public class Lexer {
     private final String input;
     private int pos;

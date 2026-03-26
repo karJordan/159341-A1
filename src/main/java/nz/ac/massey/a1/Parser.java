@@ -2,7 +2,7 @@ package nz.ac.massey.a1;
 
 import java.util.ArrayList;
 import java.util.List;
-
+//takes tokens to return statements and expressions
 public class Parser {
     private final Lexer lexer;
     private Token currentToken;

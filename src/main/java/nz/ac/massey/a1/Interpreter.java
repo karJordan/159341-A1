@@ -27,7 +27,7 @@ public class Interpreter {
     private void executeStatement(Statement stmt) {
         if (stmt instanceof AppendStatement appendStatement) {
             String oldValue = variables.getOrDefault(appendStatement.getId(), "");
-            String appendValue = appendStatement.getExpression().toString();
+            String appendValue = evaluateExpression(appendStatement.getExpression());
             variables.put(appendStatement.getId(), oldValue + appendValue);
             return;
         }
@@ -36,8 +36,9 @@ public class Interpreter {
             return;
         }
         if (stmt instanceof ListStatement listStatement) {
+            System.out.println("Identifier list " + "(" + variables.size() + ")");
             for (Map.Entry<String, String> entry : variables.entrySet()) {
-                System.out.println(entry.getKey() + " = " + entry.getKey());
+                System.out.println("\"" + entry.getKey() + ": " + entry.getValue() + "\"");
             }
             return;
         }
@@ -49,7 +50,7 @@ public class Interpreter {
                 System.out.println(0);
             } else {
                 String[] words = trimmed.split("\\s+");
-                System.out.println(words.length);
+                System.out.println("Wordcount is: " + words.length);
             }
             return;
         }
@@ -61,12 +62,18 @@ public class Interpreter {
         if (stmt instanceof PrintWordsStatement printWordsStatement) {
             String value = evaluateExpression(printWordsStatement.getExpression());
             String trimmed = value.trim();
+
             if (trimmed.isEmpty()) {
                 return;
             }
+
             String[] words = trimmed.split("\\s+");
+
             for (String word : words) {
-                System.out.println(word);
+                String modified = word.replaceAll("^[^a-zA-Z0-9]+|[^a-zA-Z0-9'-]+$", "");
+                if (!modified.isEmpty()) {
+                    System.out.println(modified);
+                }
             }
             return;
         }
@@ -86,11 +93,23 @@ public class Interpreter {
             if (value == null) {
                 throw new RuntimeException("undefined variable: " + reverseStatement.getId());
             }
-            String reversed = new StringBuilder(value).reverse().toString();
-            variables.put(reverseStatement.getId(), reversed);
+            String trimmed = value.trim();
+            if (trimmed.isEmpty()) {
+                variables.put(reverseStatement.getId(), "");
+                return;
+            }
+            String[] words = trimmed.split("\\s+");
+            StringBuilder reversed = new StringBuilder();
+
+            for (int i = words.length - 1; i >= 0; i--) {
+                reversed.append(words[i]);
+                if (i > 0) {
+                    reversed.append(" ");
+                }
+            }
+            variables.put(reverseStatement.getId(), reversed.toString());
             return;
         }
-        throw new RuntimeException("Invalid Statement: " + stmt.getClass().getSimpleName());
     }
 
     private String evaluateExpression(Expression expression) {

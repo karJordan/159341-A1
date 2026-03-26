@@ -8,6 +8,8 @@ public class Token {
         this.type = type;
         this.text = text;
     }
+
+    //getters
     public TokenType getType(){
         return type;
     }
